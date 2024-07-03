@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 import entiteti.Rezervacije;
+import entiteti.StatusRezervacije;
 import entiteti.TipSobe;
 import manage.ManagerRezervacije;
 import manage.ManagerTipSobe;
@@ -47,5 +48,20 @@ public class IzvestajiKontroler {
 			prihodi.get(ukupno)[index] += r.getCena();
 		}
 		return prihodi;
+	}
+	
+	public HashMap<String, Integer> statusiRezervacijaPeriod(LocalDate pocetak, LocalDate kraj) {
+		ManagerRezervacije mr = ManagerRezervacije.getInstance();
+		HashMap<String, Integer> statusi = new HashMap<String, Integer>();
+		for (StatusRezervacije status : StatusRezervacije.values()) {
+			statusi.put(status.toString(), 0);
+		}
+		for (Rezervacije r : mr.getRezervacije()) {
+			if (r.getDatumRezervacije().isBefore(pocetak) || r.getDatumRezervacije().isAfter(kraj)) {
+				continue;
+			}
+			statusi.put(r.getStatusRezervacije().toString(), statusi.get(r.getStatusRezervacije().toString()) + 1);
+		}
+		return statusi;
 	}
 }
