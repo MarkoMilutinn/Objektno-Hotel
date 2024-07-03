@@ -338,6 +338,24 @@ public class AdminView extends JFrame {
 		XChartPanel<PieChart> statusiChartPanel = new XChartPanel<>(statusiChart);
 		statusiChartPanel.setSize(500, 500);
 		podaciPanel.add(statusiChartPanel);
+		
+		LocalDate pocetak = LocalDate.now().minusDays(30);
+		LocalDate kraj = LocalDate.now();
+		
+		double[] prihodiRashodi = IzvestajiKontroler.getInstance().prihodiRashodiZaPeriod(pocetak, kraj);
+		System.out.println("Prihodi: " + prihodiRashodi[0]);
+		System.out.println("Rashodi: " + prihodiRashodi[1]);
+		
+		HashMap<Integer, String[]> podaciOSobama = IzvestajiKontroler.getInstance().podaciOSobamaZaPeriod(pocetak, kraj);
+		for (Integer brojSobe : podaciOSobama.keySet()) {
+			System.out.println("Soba: " + brojSobe);
+			String[] podaci = podaciOSobama.get(brojSobe);
+			System.out.println("Tip sobe: " + podaci[0]);
+			System.out.println("Status sobe: " + podaci[1]);
+			System.out.println("Broj nocenja: " + podaci[2]);
+			System.out.println("Prihodi: " + podaci[3]);
+		}
+		
 	}
 
 	private void setTableRezervacije() {
