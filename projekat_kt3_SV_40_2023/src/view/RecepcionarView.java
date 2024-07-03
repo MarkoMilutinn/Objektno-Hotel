@@ -22,9 +22,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import dijalozi.CheckInDijalog;
+import dijalozi.DodavanjeGostaDijalog;
+import dijalozi.RezervacijeDijalog;
 import entiteti.Rezervacije;
 import entiteti.StatusRezervacije;
 import kontroleri.RezervacijaKontroler;
+import manage.ManagerGost;
 import manage.ManagerRezervacije;
 import manage.ManagerSoba;
 
@@ -34,8 +38,13 @@ public class RecepcionarView extends JFrame {
 	private JPanel contentPane;
 	private static Object[] headerSoba= {"ID", "Ljudi", "Tip Sobe", "Status"};
 	private static Object[] headerRezervacije = {"ID", "Gost", "Soba", "Ljudi", "Datum od", "Datum do", "Cena", "Status"};
+	private static Object[] headerDolasci = {"ID", "Gost", "Soba", "Ljudi", "Datum od", "Datum do", "Cena", "Status"};
+	private static Object[] headerGost = {"ID", "Ime", "Prezime", "Pol", "Datum rodjenja", "Korisnicko ime"};
 	private JTable tableRezervacije;
 	private JTable tableSobe;
+	private JTable tableDolasci;
+	private JTable tableOdlasci;
+	private JTable tableGosti;
 
 	
 	public RecepcionarView() {
@@ -196,9 +205,9 @@ public class RecepcionarView extends JFrame {
         JButton checkOut = new JButton("Check out");
         checkOut.setFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 15));
         buttonsMetode.add(checkOut);
-//        JButton dodajRezervaciju = new JButton("Dodaj rezervaciju");
-//        dodajRezervaciju.setFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 15));
-//        buttonsMetode.add(dodajRezervaciju);
+        JButton dodajRezervaciju = new JButton("Dodaj rezervaciju");
+        dodajRezervaciju.setFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 15));
+        buttonsMetode.add(dodajRezervaciju);
         JButton izmeniRezervaciju = new JButton("Izmeni rezervaciju");
         izmeniRezervaciju.setFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 15));
         buttonsMetode.add(izmeniRezervaciju);
@@ -286,7 +295,203 @@ public class RecepcionarView extends JFrame {
         	}}});
         
         
+        checkIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = tableRezervacije.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate selektovati red u tabeli", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int confirm = JOptionPane.showConfirmDialog(null,
+							"Da li ste sigurni da zelite da check inujete rezervaciju?");
+					if (confirm == JOptionPane.YES_OPTION) {
+						Rezervacije r = ManagerRezervacije.getInstance().pronadjiRezervacijuPoId(
+								Integer.parseInt(tableRezervacije.getModel().getValueAt(row, 0).toString()));
+						if (r.getStatusRezervacije() != StatusRezervacije.POTVRDJENA) {
+							JOptionPane.showMessageDialog(null, "Samo rezervacije koje su potvrdjene", "Greska",
+									JOptionPane.WARNING_MESSAGE);
+							return;
+						} else {
+							if (r.getDatumDolaska().equals(java.time.LocalDate.now())) {
+								JOptionPane.showMessageDialog(null, "Check in nije moguc za ovu rezervaciju, mora danasnje", "Greska",
+										JOptionPane.WARNING_MESSAGE);
+								return;
+							}
+							CheckInDijalog cid = new CheckInDijalog(r);
+							cid.setVisible(true);
+							setTableRezervacije();
+							setTableSobe();
+//							setTableDolasci();
+//							setTableDanasnje();
+
+						}
+					}
+				}
+			}
+		});
         
+        
+        checkOut.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               int row = tableRezervacije.getSelectedRow();
+               if (row == -1) {
+                   JOptionPane.showMessageDialog(null, "Morate selektovati red u tabeli", "Greska",
+                           JOptionPane.WARNING_MESSAGE);
+               } else {
+                   int confirm = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da check outujete rezervaciju?");
+                   if (confirm == JOptionPane.YES_OPTION) {
+                       Rezervacije r = ManagerRezervacije.getInstance().pronadjiRezervacijuPoId(
+                               Integer.parseInt(tableRezervacije.getModel().getValueAt(row, 0).toString()));
+                       if (r.getStatusRezervacije() != StatusRezervacije.TRENUTNA) {
+                           JOptionPane.showMessageDialog(null, "Samo rezervacije koje su check inovane", "Greska",
+                                   JOptionPane.WARNING_MESSAGE);
+                           return;
+                       } else {
+                           RezervacijaKontroler.getInstance().checkOut(r);
+                           JOptionPane.showMessageDialog(null, "Check out je uspesan", "Check out", JOptionPane.INFORMATION_MESSAGE);
+                           setTableRezervacije();
+                           setTableSobe();
+                           //                           setTableDolasci();
+                           //                           setTableDanasnje();
+                       }
+                   }
+               }
+           }
+        });
+        
+		dodajRezervaciju.addActionListener(new ActionListener() {
+			@Override
+            public void actionPerformed(ActionEvent e) {
+                RezervacijeDijalog rd = new RezervacijeDijalog(false,null,null,false);
+                rd.setVisible(true);
+//                JOptionPane.showMessageDialog(null, "Rezervacija je dodata", "Dodavanje rezervacije",
+//                        JOptionPane.INFORMATION_MESSAGE);
+                setTableRezervacije();
+            }
+        });
+        
+        
+       
+        
+        
+        izmeniRezervaciju.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = tableRezervacije.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate selektovati red u tabeli", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int confirm = JOptionPane.showConfirmDialog(null,
+							"Da li ste sigurni da zelite da izmenite rezervaciju?");
+					if (confirm == JOptionPane.YES_OPTION) {
+						Rezervacije r = ManagerRezervacije.getInstance().pronadjiRezervacijuPoId(
+								Integer.parseInt(tableRezervacije.getModel().getValueAt(row, 0).toString()));
+						if (r.getStatusRezervacije() == StatusRezervacije.NA_CEKANJU || r.getStatusRezervacije() == StatusRezervacije.POTVRDJENA) {
+							RezervacijeDijalog rd = new RezervacijeDijalog(false,r,r.getGost().getKorisnickoIme(),true);
+							rd.setVisible(true);
+							JOptionPane.showMessageDialog(null, "Rezervacija je izmenjena", "Izmena rezervacije",
+									JOptionPane.INFORMATION_MESSAGE);
+							setTableRezervacije();
+						} else {
+							JOptionPane.showMessageDialog(null, "Rezervacija nije na cekanju ili potvrdjena", "Greska",
+									JOptionPane.WARNING_MESSAGE);
+							return;
+						}
+					}
+				}
+			}
+		});
+        
+        
+//		pregled dolazaka i odlazaka
+		
+		JPanel panelDolasci = new JPanel();
+		tabbedPane.addTab("Dolasci i odlasci", null, panelDolasci, null);
+		
+		panelDolasci.setLayout(new BorderLayout(0, 0));
+		JTabbedPane tabbedPaneDolasci = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPaneDolasci.setBounds(25, 500, 904, 350);
+		panelDolasci.add(tabbedPaneDolasci, BorderLayout.CENTER);
+		
+		JPanel panelDolasci1 = new JPanel(new BorderLayout());
+		tabbedPaneDolasci.addTab("Dolasci", null, panelDolasci , null);
+		
+		Object[][] dolasci = ManagerRezervacije.getInstance().prikazDolazaka();
+		Object [] [] odlasci = ManagerRezervacije.getInstance().prikazOdlazaka();
+		
+		this.tableDolasci = new JTable(new DefaultTableModel(dolasci, headerDolasci));
+		panelDolasci.add(new JScrollPane(tableDolasci), BorderLayout.CENTER);
+		
+		
+		JPanel panelOdlasci = new JPanel(new BorderLayout());
+		tabbedPaneDolasci.addTab("Odlasci", null, panelOdlasci, null);
+		
+		tableOdlasci = new JTable(new DefaultTableModel(odlasci, headerDolasci));
+		panelOdlasci.add(new JScrollPane(tableOdlasci), BorderLayout.CENTER);
+		
+		JPanel promene = new JPanel(new BorderLayout());
+		tabbedPaneDolasci.addTab("Sve", null, promene, null);
+		
+		
+		
+//     za goste
+	   JPanel gostPanel = new JPanel();
+	   gostPanel.setLayout(new BorderLayout(0, 0));	
+	   tabbedPane.addTab("Gosti", null, gostPanel, null);
+	   
+	   
+	   JLabel NaslovGosti = new JLabel("Gosti hotela");
+	   NaslovGosti.setFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 20));
+	   NaslovGosti.setHorizontalAlignment(JLabel.CENTER);
+	   gostPanel.add(NaslovGosti, BorderLayout.NORTH);
+	   
+	   Object[][] gosti = ManagerGost.getInstance().prikazGostijuTabela();
+	   JScrollPane scrollPaneGosti = new JScrollPane();
+	   TableModel modelGosti= new DefaultTableModel(gosti, headerGost) {
+		   private static final long serialVersionUID = 5668735439825556971L;
+		   @Override
+		   public Class<?> getColumnClass(int column) {
+               if (getRowCount() == 0) {
+                   return Object.class;
+               }
+               return getValueAt(0, column).getClass();
+           }
+	   };
+	   
+	   tableGosti = new JTable(modelGosti);
+	   tableGosti.setFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 15));
+	   tableGosti.getTableHeader().setFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 18));
+	   tableGosti.getTableHeader().setReorderingAllowed(false);
+	   scrollPaneGosti.setViewportView(tableGosti);
+	   gostPanel.add(scrollPaneGosti, BorderLayout.CENTER);
+	   
+	   TableRowSorter<TableModel> sorterGosti = new TableRowSorter<>(modelGosti);
+	   tableGosti.setRowSorter(sorterGosti);
+	   
+	   JPanel buttonsGosti = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 25));
+	   JButton dodajGosta = new JButton("Dodaj gosta");
+	   dodajGosta.setFont(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 15));
+	   buttonsGosti.add(dodajGosta);
+	   gostPanel.add(buttonsGosti, BorderLayout.SOUTH);
+	   
+		dodajGosta.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DodavanjeGostaDijalog dgd = new DodavanjeGostaDijalog(null);
+				dgd.setVisible(true);
+				setTableGosti();
+			}
+		});
+	   
+	   
+	   
+	   
+	   
+	   
+	   
         
        
         

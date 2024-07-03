@@ -123,6 +123,21 @@ public class RezervacijaKontroler {
 	    return false;
 	}
 	
+	public String [] dobijanjeIdSlobodnihSoba(Rezervacije r) {
+		ArrayList<Soba> sveSobe = ManagerSoba.getInstance().pronadjiSobePoTipu(r.getTipSobe());
+		ArrayList<Soba> slobodneSobe = new ArrayList<Soba>();
+		for (Soba s : sveSobe) {
+			if (s.getStatusSobe().equals(StatusSobe.SLOBODNA)) {
+				slobodneSobe.add(s);
+			}
+		}
+		String[] sobe = new String[slobodneSobe.size()];
+		for (int i = 0; i < slobodneSobe.size(); i++) {
+			sobe[i] = slobodneSobe.get(i).toString();
+		}
+		return sobe;
+	}
+		
 	
 	public void checkIn(Rezervacije r) {
 		ArrayList<Soba> sveSobe = ManagerSoba.getInstance().pronadjiSobePoTipu(r.getTipSobe());

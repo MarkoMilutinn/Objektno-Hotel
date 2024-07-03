@@ -1,22 +1,30 @@
 package view;
 
-import java.awt.Font;
+import java.awt.BorderLayout;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.border.EmptyBorder;
+
+import entiteti.Osoba;
+import kontroleri.UserKontroler;
+
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 
-import entiteti.Osoba;
-import kontroleri.UserKontroler;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JButton;
 
 public class StartView extends JFrame {
 
@@ -24,19 +32,8 @@ public class StartView extends JFrame {
 	private JPanel contentPane;
 	private JTextField korisnickoIme;
 	private JPasswordField sifra;
-	/*
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					StartView frame = new StartView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
+	
+//	
 
 	/**
 	 * Create the frame.
@@ -111,7 +108,9 @@ public class StartView extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					prijava.doClick();
+					prijava.doClick()
+					
+					;
 				}
 			}
 

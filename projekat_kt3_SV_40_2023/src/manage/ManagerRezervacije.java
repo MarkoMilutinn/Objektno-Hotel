@@ -262,8 +262,58 @@ public class ManagerRezervacije {
 	}
 	
 	
+	public Object [][] prikazDolazaka(){
+		Object[][] ret = new Object[rezervacije.size()][8];
+		LocalDate danas = LocalDate.now();
+		for (int i = 0; i < rezervacije.size(); i++) {
+			Rezervacije r = rezervacije.get(i);
+			if (r.getStatusRezervacije() == StatusRezervacije.POTVRDJENA) {
+				if (r.getDatumDolaska().isEqual(danas)) {
+                    ret[i][0] = r.getId();
+                    ret[i][1] = r.getGost().getKorisnickoIme();
+                    ret[i][2] = r.getSoba() == null ? " " : r.getSoba().getId();
+                    ret[i][3] = r.getTipSobe().getLjudi();
+                    ret[i][4] = r.getStringDatumDolaska();
+                    ret[i][5] = r.getStringDatumOdlaska();
+                    ret[i][6] = r.getCena();
+                    ret[i][7] = r.getStatusRezervacije();
+			}
+		}
+		
+		
+	}
+	return ret;
+}
+	
+		
+	public Object [][] prikazOdlazaka(){
+		Object[][] ret = new Object[rezervacije.size()][8];
+        LocalDate danas = LocalDate.now();
+        for (int i = 0; i < rezervacije.size(); i++) {
+            Rezervacije r = rezervacije.get(i);
+            if (r.getStatusRezervacije() == StatusRezervacije.TRENUTNA) {
+                if (r.getDatumOdlaska().isEqual(danas)) {
+                    ret[i][0] = r.getId();
+                    ret[i][1] = r.getGost().getKorisnickoIme();
+                    ret[i][2] = r.getSoba() == null ? " " : r.getSoba().getId();
+                    ret[i][3] = r.getTipSobe().getLjudi();
+                    ret[i][4] = r.getStringDatumDolaska();
+                    ret[i][5] = r.getStringDatumOdlaska();
+                    ret[i][6] = r.getCena();
+                    ret[i][7] = r.getStatusRezervacije();
+            }
+        }
+        
+        
+    }
+        return ret;
+        }
+       
 	
 	
 	
 	
+	
+	
+
 }

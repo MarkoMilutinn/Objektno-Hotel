@@ -133,6 +133,20 @@ public class ManagerGost{
 		}
 	}
 	
+	public Object[][] prikazGostijuTabela() {
+		Object[][] podaci = new Object[gosti.size()][6];
+		for (int i = 0; i < gosti.size(); i++) {
+			Gost gost = gosti.get(i);
+			podaci[i][0] = gost.getId();
+			podaci[i][1] = gost.getIme();
+			podaci[i][2] = gost.getPrezime();
+			podaci[i][3] = gost.getPol().toString();
+			podaci[i][4] = gost.getDatumRodjenja();
+			podaci[i][5] = gost.getKorisnickoIme();
+		}
+		return podaci;
+	}
+	
 	
 	
 	

@@ -2,7 +2,7 @@ package entiteti;
 
 public enum StatusRezervacije {
 
-    NA_CEKANJU(1), POTVRDJENA(2), ODBIJENA(3), OTKAZANA(4), ZAVRSENA(5);
+    NA_CEKANJU(1), POTVRDJENA(2), ODBIJENA(3), OTKAZANA(4), ZAVRSENA(5), TRENUTNA(6);
     int status;
 
     private StatusRezervacije(int status) {
@@ -21,6 +21,8 @@ public enum StatusRezervacije {
                 return 	OTKAZANA;
             case 5:
             	return ZAVRSENA;
+            case 6:
+            	return TRENUTNA;
                 
             default:
                 return null;
