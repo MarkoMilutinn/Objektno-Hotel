@@ -1,0 +1,4 @@
+1,jednokrevetna,1
+2,dvokrevetna,2
+3,dvokrevetna,1+1
+4,trokrevetna,2+1

@@ -1,0 +1,4 @@
+1,dorucak
+2,rucak
+3,vecera
+4,bazen
