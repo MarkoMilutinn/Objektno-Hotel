@@ -24,47 +24,24 @@ import meni.GostMeni;
 import meni.Meni;
 import meni.RecepcionerMeni;
 import meni.SobaricaMeni;
+import view.StartView;
 
 public class Main {
 	public static Scanner sc = new Scanner(System.in);
 
 	public static void main(String[] args) {
+		boolean gui = true;
+		//gui = false;
 //		posle prvog pokretanja aplikacije, komentarisati innit() metodu
 //		innit();
-		while (true) {
-			System.out.print("Unesite korisnicko ime: ");
-			String korisnicko = sc.nextLine();
-			System.out.print("Unesite lozinku: ");
-			String lozinka = sc.nextLine();
-
-			Osoba o = UserKontroler.getInstance().login(korisnicko, lozinka);
-
-			if (o == null) {
-				System.out.println("Pogresno korisnicko ime ili lozinka");
-				continue;
-			}
-			System.out.println("Uspesno ste se ulogovali");
-			Meni meni = new Meni(o);
-			System.out.println(o.getTip());
-			switch (o.getTip()) {
-			case 3:
-				meni = new AdminMeni(o);
-				break;
-			case 1:
-				meni = new GostMeni(o);
-				break;
-			case 4:
-				meni = new RecepcionerMeni(o);
-				break;
-			case 2:
-				meni = new SobaricaMeni(o);
-				break;
-			default:
-				System.out.println("Nepoznata uloga");
-				break;
-			}
-			if (!meni.run()) break;
+		if (gui) {
+			StartView frame = new StartView();
+			frame.setVisible(true);
 		}
+		else {
+			cli();
+		}
+		
 
 //		managerGost je sta gost moze, ManagerRecepcionar sta recepcionar moze, ManagerAdmin sta admin moze
 
@@ -205,6 +182,42 @@ public class Main {
 //		
 //		
 
+	}
+	private static void cli() {
+		while (true) {
+			System.out.print("Unesite korisnicko ime: ");
+			String korisnicko = sc.nextLine();
+			System.out.print("Unesite lozinku: ");
+			String lozinka = sc.nextLine();
+
+			Osoba o = UserKontroler.getInstance().login(korisnicko, lozinka);
+
+			if (o == null) {
+				System.out.println("Pogresno korisnicko ime ili lozinka");
+				continue;
+			}
+			System.out.println("Uspesno ste se ulogovali");
+			Meni meni = new Meni(o);
+			System.out.println(o.getTip());
+			switch (o.getTip()) {
+			case 3:
+				meni = new AdminMeni(o);
+				break;
+			case 1:
+				meni = new GostMeni(o);
+				break;
+			case 4:
+				meni = new RecepcionerMeni(o);
+				break;
+			case 2:
+				meni = new SobaricaMeni(o);
+				break;
+			default:
+				System.out.println("Nepoznata uloga");
+				break;
+			}
+			if (!meni.run()) break;
+		}
 	}
 	static void innit() {
 		ManagerAdmin.getInstance().dodajAdmina("Pera","Peric",Pol.MUSKI,"12.12.1980.", "069888888","Adresa aaa", "peraPlanina","lozinka");

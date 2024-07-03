@@ -1,30 +1,22 @@
 package view;
 
-import java.awt.BorderLayout;
-
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.border.EmptyBorder;
-
-import entiteti.Osoba;
-import kontroleri.UserKontroler;
-
-import java.awt.GridLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import java.awt.FlowLayout;
-import java.awt.Font;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
+
+import entiteti.Osoba;
+import kontroleri.UserKontroler;
 
 public class StartView extends JFrame {
 
@@ -32,7 +24,7 @@ public class StartView extends JFrame {
 	private JPanel contentPane;
 	private JTextField korisnickoIme;
 	private JPasswordField sifra;
-	
+	/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -44,7 +36,7 @@ public class StartView extends JFrame {
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
@@ -119,9 +111,7 @@ public class StartView extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					prijava.doClick()
-					
-					;
+					prijava.doClick();
 				}
 			}
 
@@ -147,8 +137,8 @@ public class StartView extends JFrame {
 					case 3:
 						contentPane.setVisible(false);
 						dispose();
-//						AdminView adminView = new AdminView(o);
-//						adminView.setVisible(true);
+						AdminView adminView = new AdminView(o);
+						adminView.setVisible(true);
 						dispose();
 						break;
 					case 1:
